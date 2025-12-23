@@ -1,0 +1,7 @@
+[project]
+name = "google-monitoring-notification-channel-discord-functions"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []

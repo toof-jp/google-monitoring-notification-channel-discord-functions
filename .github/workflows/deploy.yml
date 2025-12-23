@@ -1,0 +1,47 @@
+name: Deploy Cloud Function
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  FUNCTION_NAME: monitoring-notification-channel-discord
+  FUNCTION_REGION: us-central1
+  FUNCTION_RUNTIME: python311
+  FUNCTION_ENTRYPOINT: main
+  FUNCTION_STAGE_BUCKET: toof-infra-monitoring-notification-channel-discord-functions
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
+        with:
+          workload_identity_provider: projects/967218718923/locations/global/workloadIdentityPools/github-actions/providers/monitoring-function-repo
+          service_account: monitoring-function-deployer@toof-infra.iam.gserviceaccount.com
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2.2.1
+
+      - name: Deploy Cloud Function
+        run: |
+          gcloud config set project toof-infra
+          gcloud functions deploy "$FUNCTION_NAME" \
+            --gen2 \
+            --region="$FUNCTION_REGION" \
+            --runtime="$FUNCTION_RUNTIME" \
+            --entry-point="$FUNCTION_ENTRYPOINT" \
+            --source=. \
+            --stage-bucket="$FUNCTION_STAGE_BUCKET" \
+            --trigger-http \
+            --allow-unauthenticated
