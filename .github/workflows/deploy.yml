@@ -12,6 +12,7 @@ env:
   FUNCTION_ENTRYPOINT: handle
   FUNCTION_STAGE_BUCKET: toof-infra-monitoring-notification-channel-discord-functions
   FUNCTION_SECRET_BINDING: WEBHOOK_URL=discord-webhook-url:latest
+  FUNCTION_SERVICE_ACCOUNT: monitoring-function-runtime@toof-infra.iam.gserviceaccount.com
 
 jobs:
   deploy:
@@ -46,4 +47,5 @@ jobs:
             --stage-bucket="$FUNCTION_STAGE_BUCKET" \
             --trigger-http \
             --allow-unauthenticated \
-            --set-secrets "$FUNCTION_SECRET_BINDING"
+            --set-secrets "$FUNCTION_SECRET_BINDING" \
+            --service-account "$FUNCTION_SERVICE_ACCOUNT"
