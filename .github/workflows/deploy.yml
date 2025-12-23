@@ -9,8 +9,9 @@ env:
   FUNCTION_NAME: monitoring-notification-channel-discord
   FUNCTION_REGION: us-central1
   FUNCTION_RUNTIME: python311
-  FUNCTION_ENTRYPOINT: main
+  FUNCTION_ENTRYPOINT: handle
   FUNCTION_STAGE_BUCKET: toof-infra-monitoring-notification-channel-discord-functions
+  FUNCTION_SECRET_BINDING: WEBHOOK_URL=discord-webhook-url:latest
 
 jobs:
   deploy:
@@ -44,4 +45,5 @@ jobs:
             --source=. \
             --stage-bucket="$FUNCTION_STAGE_BUCKET" \
             --trigger-http \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --set-secrets "$FUNCTION_SECRET_BINDING"
