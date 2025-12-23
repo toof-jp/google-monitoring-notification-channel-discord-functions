@@ -46,6 +46,5 @@ jobs:
             --source=. \
             --stage-bucket="$FUNCTION_STAGE_BUCKET" \
             --trigger-http \
-            --allow-unauthenticated \
             --set-secrets "$FUNCTION_SECRET_BINDING" \
             --service-account "$FUNCTION_SERVICE_ACCOUNT"
